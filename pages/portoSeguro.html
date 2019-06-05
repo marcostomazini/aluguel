@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Porto Seguro</title>
+
+	<!-- update the version number as needed -->
+	<script defer="" src="/__/firebase/5.9.2/firebase-app.js"></script>
+	<!-- include only the Firebase features as you need -->
+	<script defer="" src="/__/firebase/5.9.2/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/5.9.2/firebase-database.js"></script>
+	<script defer="" src="/__/firebase/5.9.2/firebase-messaging.js"></script>
+	<script defer="" src="/__/firebase/5.9.2/firebase-storage.js"></script>
+	<!-- initialize the SDK after all desired features are loaded -->
+	<script defer="" src="/__/firebase/init.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<v-app>
+			<v-navigation-drawer v-model="drawer" fixed="" app="">
+				<v-list dense="">
+					<v-list-tile @click="">
+						<v-list-tile-action>
+							<v-icon>home</v-icon>
+						</v-list-tile-action>
+						<v-list-tile-content>
+							<v-list-tile-title>Home</v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+				</v-list>
+			</v-navigation-drawer>
+
+			<v-toolbar color="indigo" dark="" fixed="" app="">
+				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+				<v-toolbar-title>Orçamento</v-toolbar-title>
+			</v-toolbar>
+
+			<v-content>
+
+				<!-- INICIO CABECALIO-->
+				<v-container fluid="" grid-list-md="">
+					<div style="text-align: center">
+
+						<v-layout row="">
+							<v-flex grow="" d-flex="" xs12="" sm6="" md12="">
+								<v-card color="blue lighten-2" dark="">
+									<h1>
+										<v-card-text>{{ titulo }}</v-card-text>
+									</h1>
+								</v-card>
+							</v-flex>
+						</v-layout>
+					</div>
+					<div>
+						<v-alert :value="true" type="error">
+							Falha na comunicação com o serviço da Porto Seguro
+						</v-alert>
+					</div>
+
+					<v-layout row="" wrap="">
+						<v-flex d-flex="" xs12="" sm6="" md12="">
+							<v-card color="white" dark="" style="display: flex; margin: 5px; flex-wrap: wrap;">
+
+								<p>&nbsp;</p>
+								<table style="width: 999px; height: 255px;" border="0" cellspacing="0" cellpadding="0">
+									<tbody>
+										<tr>
+											<td style="width: 220.125px;">
+												<p><img style="display: block; margin-left: auto; margin-right: auto;"
+														src="https://s3.amazonaws.com/projeto-base/2dd430f2-83b0-4d2c-9efb-9fe42f1bc2f8.jpg"
+														alt="" width="150" height="200"></p>
+												
+											</td>
+											<td style="width: 347.890625px;">
+												<p style="text-align: center;"><span
+														style="font-size: 26px; color: #000000;"><strong>Orçamento</strong></span>
+												</p>
+												<p style="text-align: center;"><span
+														style="font-size: 26px; color: #000000;"><strong>Porto
+															Seguro Tradicional</strong></span></p>
+											</td>
+											<td style="width: 423px;">
+												<table style="width: 423px;" border="1px solid black" cellspacing="0"
+													cellpadding="10" align="center">
+													<tbody>
+														<tr>
+															<td style="width: 197.78125px;"><span
+																	style="color: #000000;"><strong>Emissão</strong>:
+																	dd/mm/aaaa</span></td>
+															<td style="width: 182.21875px;"><span
+																	style="color: #000000;"><strong>Número
+																		orçamento</strong>: 000</span></td>
+														</tr>
+														<tr>
+															<td style="width: 197.78125px;"><span
+																	style="color: #000000;"><strong>Vigência</strong>:
+																	dd/mm/aaaa</span></td>
+															<td style="width: 182.21875px;"><span
+																	style="color: #000000;"><strong>Tipo
+																		seguro</strong>: XXXXX</span></td>
+														</tr>
+														<tr>
+															<td style="width: 197.78125px;"><span
+																	style="color: #000000;"><strong>até as 24H</strong>:
+																	dd/mm/aaaa</span></td>
+															<td style="width: 182.21875px;"><span
+																	style="color: #000000;"><strong><em>Impressão</em></strong>:
+																	dd/mm/aaaa -
+																	hh:mm:ss</span></td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+
+							</v-card>
+						</v-flex>
+
+						<!--               <div align="center">
+              <v-flex d-flex="" xs12="" sm6="" md="">
+                <v-card color="blue lighten-2" dark="">
+              
+                </v-card>
+              </v-flex>
+              </div> -->
+					</v-layout>
+				</v-container>
+				<!-- FIM CABECALIO-->
+
+				<v-container fluid="">
+					<v-layout justify-center="" align-center="">
+
+
+						<v-flex text-xs-center="">
+
+							<!-- INICIO CONTEUDO-->
+
+							<template>
+								<v-stepper v-model="e6" vertical="">
+									<!-- <v-stepper-step :complete="e6 > 1" step="1">
+										Dados do Corretor
+									</v-stepper-step> -->
+
+									<!-- <v-stepper-content step="1">
+
+										<v-form v-model="valid">
+											<v-container>
+												<v-layout>
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="susep" label="SUSEP"
+															:rules="requiredRule" required outline="">
+														</v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-validate="'required'" v-model="corretor"
+															label="Corretor líder" :rules="requiredRule" required
+															outline=""></v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="telefone" label="Telefone"
+															:rules="requiredRule" required outline="">
+														</v-text-field>
+													</v-flex>
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="participacao" label="% Participação"
+															:rules="requiredRule" required outline=""></v-text-field>
+													</v-flex>
+												</v-layout>
+
+												<v-layout>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="email" label="E-mail" :rules="emailRules"
+															required outline="">
+														</v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="codOpe" label="Código de Operação"
+															:rules="requiredRule" required outline=""></v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-select :items="unidadesOperacionais"
+															label="Unidade Operacional" outline=""></v-select>
+													</v-flex>
+
+												</v-layout>
+
+											</v-container>
+										</v-form>f
+
+										<v-btn color="primary" @click="e6 = 2">Avançar</v-btn>
+									</v-stepper-content> -->
+
+									<v-stepper-step :complete="e6 > 1" step="1">Dados Gerais
+									</v-stepper-step>
+
+									<v-stepper-content step="1">
+
+										<v-form v-model="valid">
+											<v-container>
+												<v-layout>
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="pretendente" label="Pretendente"
+															:rules="requiredRule" required outline=""></v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-select :items="tipoPessoa" item-text="label"
+															item-value="value" label="Tipo Pessoa"
+															v-model="tipoPessoaSelecionado" outline=""></v-select>
+													</v-flex>
+
+													<v-flex xs12="" md4="" v-if="tipoPessoaSelecionado === 1">
+														<v-text-field v-model="cpf" label="CPF" :rules="requiredRule"
+															required outline="" :mask="maskCPF"></v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="" v-else>
+														<v-text-field v-model="cnpj" label="CNPJ" :rules="requiredRule"
+															required outline="" :mask="maskCNPJ"></v-text-field>
+													</v-flex>
+
+												</v-layout>
+
+												<v-layout>
+
+													<v-flex xs12="" md4="">
+														<v-select :items="vinculoEmpregaticio" item-text='value' item-value='id'
+															label="Vínculo empregatício" outline=""></v-select>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="renda" label="Renda"
+															:rules="requiredRule" required outline="">
+														</v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="" v-if="tipoPessoaSelecionado === 1">
+														<v-select :items="estadoCivil" item-text="label"
+															item-value="value" label="Estado Civil" outline="">
+														</v-select>
+													</v-flex>
+
+												</v-layout>
+
+											</v-container>
+										</v-form>
+
+										<v-btn color="primary" @click="e6 = 2">Avançar</v-btn>
+										
+									</v-stepper-content>
+
+									<v-stepper-step :rules="[() => true]" :complete="e6 > 2" step="2">
+										Dados do Imóvel objeto da locação
+										<!--                     <small>Alert message</small> -->
+									</v-stepper-step>
+
+									<v-stepper-content step="2">
+										<v-form v-model="valid">
+											<v-container>
+												<v-layout>
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="cep" label="CEP" :rules="requiredRule"
+															required outline="" :mask="maskCEP"
+															append-outer-icon="search" @click:append-outer="buscaCep">
+														</v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="uf" label="Estado" required outline=""
+															disabled></v-text-field>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="cidade" label="Cidade" required
+															outline="" disabled></v-text-field>
+													</v-flex>
+													<v-flex xs12="" md4="">
+														<v-text-field v-model="logradouro" label="Logradouro" required
+															outline="" disabled>
+														</v-text-field>
+													</v-flex>
+												</v-layout>
+
+												<v-layout>
+
+													<v-flex xs12="" md4="">
+														<v-select :items="finalidadeLocacao" item-text='value' item-value='id'
+															label="Finalidade da locação" outline=""></v-select>
+													</v-flex>
+
+													<v-flex xs12="" md4="">
+														<v-select :items="tipoImovel" label="Tipo do Imóvel" item-text='label' item-value='value' outline="">
+														</v-select>
+													</v-flex>
+
+												</v-layout>
+
+											</v-container>
+										</v-form>
+										<v-btn color="primary" @click="e6 = 3">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 1">Voltar</v-btn>
+									</v-stepper-content>
+
+									<v-stepper-step step="3">Coberturas</v-stepper-step>
+									<v-stepper-content step="3">
+										<v-data-table :headers="headers" :items="coberturasDados" class="elevation-1">
+											<template v-slot:items="props">
+												<td>{{ props.item.cobertura }}</td>
+												<td>{{ props.item.verba }}</td>
+												<td>{{ props.item.premio }}</td>
+											</template>
+										</v-data-table>
+										<h2>TOTAL PRÊMIO LÍQUIDO: R$ 0.000,00</h2>
+										<v-btn color="primary" @click="e6 = 4">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 2">Voltar</v-btn>
+									</v-stepper-content>
+
+									<v-stepper-step step="4">Demonstrativo de prêmio</v-stepper-step>
+									<v-stepper-content step="4">
+										<v-data-table :items="demonstrativoPremio" class="elevation-1">
+											<template v-slot:items="props">
+												<td>{{ props.item.coberturaC1 }}</td>
+												<td>{{ props.item.premioC1 }}</td>
+												<td>{{ props.item.coberturaC2 }}</td>
+												<td>{{ props.item.premioC2 }}</td>
+											</template>
+										</v-data-table>
+										<div>
+											<br>
+											<br>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+											<p>"Este orçamento não garante aceitação de risco."</p>
+										</div>
+										<v-btn color="primary" @click="e6 = 5">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 3">Voltar</v-btn>
+									</v-stepper-content>
+
+									<v-stepper-step step="5">Participação obrigatória do segurado</v-stepper-step>
+									<v-stepper-content step="5">
+										<v-card color="white lighten-1" class="mb-5" height="200px">
+											<div>
+												<br>
+												<p>DANOS AO IMÓVEL 20% DA INDENIZAÇÃO COM O MÍNIMO R$ 200,00
+												</p>
+											</div>
+										</v-card>
+										<v-btn color="primary" @click="e6 = 6">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 2">Voltar</v-btn>
+									</v-stepper-content>
+
+									<v-stepper-step step="6">Forma de pagamento</v-stepper-step>
+									<v-stepper-content step="6">
+
+										<v-data-table :items="formaPagamento" class="elevation-1">
+											<template v-slot:items="props">
+												<td>{{ props.item.coberturaC1 }}</td>
+												<td>{{ props.item.premioC1 }}</td>
+												<td>{{ props.item.coberturaC2 }}</td>
+												<td>{{ props.item.premioC2 }}</td>
+											</template>
+										</v-data-table>
+										<div>
+											<br>
+											<p><b>ATENÇÃO PARA VIGÊNCIA DO SEGURO</b></p>
+											<br>
+											<p>Lorem ipsum dui molestie tempor taciti vehicula semper bibendum purus,
+												sit phasellus taciti
+												urna mauris bibendum in lacinia, interdum faucibus tellus donec porta
+												ligula facilisis elit. mi
+												sem eleifend tortor ante inceptos nec eleifend vel conubia, cras etiam
+												sociosqu nisi imperdiet
+												leo quis malesuada, id netus est lorem ultricies curabitur tempor
+												ultrices. cursus augue nostra
+												nunc dolor quisque convallis, scelerisque augue cursus mollis eleifend
+												ultrices senectus,
+												conubia risus hendrerit dui leo. potenti lobortis ut metus class urna
+												leo velit neque, senectus
+												aliquam metus habitant placerat elit aliquam massa velit, aptent
+												sollicitudin amet tempor nunc
+												litora dictumst.</p>
+										</div>
+										<v-btn color="primary" @click="e6 = 7">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 5">Voltar</v-btn>
+									</v-stepper-content>
+
+									<v-stepper-step step="7">Avisos</v-stepper-step>
+									<v-stepper-content step="7">
+										<div>
+											<br>
+											<br>
+											<p>Lorem ipsum dui molestie tempor taciti vehicula semper bibendum purus,
+												sit phasellus taciti
+												urna mauris bibendum in lacinia, interdum faucibus tellus donec porta
+												ligula facilisis elit. mi
+												sem eleifend tortor ante inceptos nec eleifend vel conubia, cras etiam
+												sociosqu nisi imperdiet
+												leo quis malesuada, id netus est lorem ultricies curabitur tempor
+												ultrices. cursus augue nostra
+												nunc dolor quisque convallis, scelerisque augue cursus mollis eleifend
+												ultrices senectus,
+												conubia risus hendrerit dui leo. potenti lobortis ut metus class urna
+												leo velit neque, senectus
+												aliquam metus habitant placerat elit aliquam massa velit, aptent
+												sollicitudin amet tempor nunc
+												litora dictumst.</p>
+											<br>
+											<br>
+											<p>Lorem ipsum dui molestie tempor taciti vehicula semper bibendum purus,
+												sit phasellus taciti
+												urna mauris bibendum in lacinia, interdum faucibus tellus donec porta
+												ligula facilisis elit. mi
+												sem eleifend tortor ante inceptos nec eleifend vel conubia, cras etiam
+												sociosqu nisi imperdiet
+												leo quis malesuada, id netus est lorem ultricies curabitur tempor
+												ultrices. cursus augue nostra
+												nunc dolor quisque convallis, scelerisque augue cursus mollis eleifend
+												ultrices senectus,
+												conubia risus hendrerit dui leo. potenti lobortis ut metus class urna
+												leo velit neque, senectus
+												aliquam metus habitant placerat elit aliquam massa velit, aptent
+												sollicitudin amet tempor nunc
+												litora dictumst.</p>
+											<br>
+											<br>
+											<p>Lorem ipsum dui molestie tempor taciti vehicula semper bibendum purus,
+												sit phasellus taciti
+												urna mauris bibendum in lacinia, interdum faucibus tellus donec porta
+												ligula facilisis elit. mi
+												sem eleifend tortor ante inceptos nec eleifend vel conubia, cras etiam
+												sociosqu nisi imperdiet
+												leo quis malesuada, id netus est lorem ultricies curabitur tempor
+												ultrices. cursus augue nostra
+												nunc dolor quisque convallis, scelerisque augue cursus mollis eleifend
+												ultrices senectus,
+												conubia risus hendrerit dui leo. potenti lobortis ut metus class urna
+												leo velit neque, senectus
+												aliquam metus habitant placerat elit aliquam massa velit, aptent
+												sollicitudin amet tempor nunc
+												litora dictumst.</p>
+										</div>
+										<v-btn color="primary" @click="e6 = 1">Avançar</v-btn>
+										<v-btn flat="" @click="e6 = 6">Voltar</v-btn>
+									</v-stepper-content>
+
+								</v-stepper>
+
+							</template>
+
+							<template>
+								<v-btn block="" color="success" dark="" @click="connectPostoSeguro">Concluir</v-btn>
+							</template>
+
+							<!-- FIM CONTEUDO-->
+
+						</v-flex>
+					</v-layout>
+				</v-container>
+			</v-content>
+			<v-footer color="indigo" app="">
+				<span class="white--text">© 2017</span>
+			</v-footer>
+		</v-app>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+	<!-- jsdelivr cdn -->
+	<script src="https://cdn.jsdelivr.net/npm/vee-validate@latest/dist/vee-validate.js">		</script>
+	<!-- unpkg -->
+	<script src="https://unpkg.com/vee-validate@latest"></script>
+	<script>
+
+		Vue.use(VeeValidate);
+		console.log(window.location);
+
+		const finalidadeMock = []
+			.map(item => item.value)
+		const vue = new Vue({
+			el: '#app',
+			$_veeValidate: {
+				validator: 'new'
+			},
+			data: () => ({
+				drawer: false,
+				e6: 1,
+				tipoPessoaSelecionado: 0,
+				unidadesOperacionais: ['Unidade 01', 'Unidade 02', 'Unidade 03', 'Unidade 04'],
+				finalidadeLocacao: finalidadeMock,
+				vinculoEmpregaticio:[],
+				tipoPessoa: [{ label: 'Pessoa Física', value: 1 }, { label: 'Pessoa Jurídica', value: 2 }],
+				tipoImovel: [{ label: 'Apartamento', value: 'APARTAMENTO'},{ label: 'Casa', value: 'CASA'},{ label: 'Condomínio fechado', value: 'CONDOMINIO_FECHADO'}],
+				estadoCivil: [{ label:'Solteiro',value: 'SOLTEIRO'},{ label:'Casado',value: 'CASADO'},{ label:'Amasiado',value: 'AMASIADO'},{ label:'Desquitado',value: 'DESQUITADO'},{ label:'Divorciado',value: 'DIVORCIADO'},{ label:'Separado',value: 'SEPARADO'},{ label:'Viuvo',value: 'VIUVO'},{ label:'Não Declarado',value: 'ESTADO_CIVIL_INVALIDO'}],
+				email: '',
+				renda: 0,
+				cep: null,
+				uf: 'UF',
+				cidade: 'cidade',
+				logradouro: 'localidade',
+				rendaFormatado: 'R$ 0,00',
+				maskCPF: '###.###.###/##',
+				maskCNPJ: '##.###.###/####-##',
+				maskCEP: '##.###-###',
+				emailRules: [
+					v => !!v || 'E-mail is required',
+					v => /.+@.+/.test(v) || 'E-mail must be valid'
+				],
+				requiredRule: [
+					v => !!v || 'Campo obrigatório'
+				],
+				headers: [
+					{
+						text: 'Cobertura',
+						align: 'left',
+						sortable: false,
+						value: 'name'
+					},
+					{ text: 'Verba declarada', value: 'verbaDeclarada', sortable: false, },
+					{ text: 'Prêmio Líquido', value: 'premioLiquido', sortable: false, },
+				],
+				coberturasDados: [
+					{
+						cobertura: 'Aluguel',
+						verba: 1000.0,
+						premio: 1000.0
+					},
+				],
+				demonstrativoPremio: [
+					{
+						coberturaC1: 'PRÊMIO LÍQUIDO COBERTURAS',
+						premioC1: 10000,
+						coberturaC2: 'CUSTO DE APÓLICE',
+						premioC2: 10000
+					},
+				],
+				formaPagamento: [
+					{
+						coberturaC1: 'DESCRIÇÃO',
+						premioC1: 10000,
+						coberturaC2: 'JUROS',
+						premioC2: 10000
+					},
+				],
+			}),
+			created() {
+				// fetch the data when the view is created and the data is
+				// already being observed
+				this.listaMotivos();
+				this.listaVinculosEmpregaticios();
+			},
+			methods:
+			{
+				complete_avancar: function () {
+					return e6 > 1
+				},
+				avancar_teste: function () {
+					return e6 = 2
+				},
+				formatPrice(value) {
+					let val = (value / 1).toFixed(2).replace('.', ',')
+					return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+				},
+				formatarValorFinanceiro(value) {
+					this.renda = this.formatPrice(value);
+				},
+				buscaCep() {
+					fetch(`https://viacep.com.br/ws/${this.cep}/json/unicode/`)
+						.then((resp) => resp.json())
+						.then(function (data) {
+							const { erro } = data;
+							if (erro) {
+								alert("CEP não localizado")
+								console.log('Cep não encontrado')
+							} else {
+								const { bairro, localidade, logradouro, uf } = data;
+								vue.cidade = localidade;
+								vue.uf = uf;
+								vue.logradouro = logradouro;
+								console.log(`Bairro: ${bairro}, Logradouro: ${logradouro}, Localidade: ${localidade}, UF: ${uf}`);
+							}
+						})
+						.catch(function (error) {
+							console.log(`Erro ${error}`)
+						});
+				},
+				connectPostoSeguro() {
+					const host = window.location.hostname;
+					const endpoint = ':3451/hello';
+					const url = new String(`http://${host}${endpoint}`);
+					console.log(url);
+					console.log(url.toString())
+					fetch(url.toString())
+						.then((resp) => resp.text())
+						.then(function (data) {
+							alert(`retorno ${data}`);
+						}).catch(function (error) {
+							alert(`deu ruim ${error}`);
+						});
+				},
+				listaMotivos() {
+					const url = "/core/integracao-porto-seguro/motivos-locacao";
+					fetch(url)
+						.then((resp) => resp.json())
+						.then(function (data) {
+							vue.finalidadeLocacao = data;
+						}).catch(function (error) {
+							vue.finalidadeLocacao = [];
+						});
+				},
+				listaVinculosEmpregaticios() {
+					const url = "/core/integracao-porto-seguro/vinculos-empregaticios";
+					fetch(url)
+						.then((resp) => resp.json())
+						.then(function (data) {
+							vue.vinculoEmpregaticio = data;
+						}).catch(function (error) {
+							vue.vinculoEmpregaticio = [];
+						});
+				}
+
+			},
+		}
+
+		);
+
+
+
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "tda-core",
+  "version": "1.0.0",
+  "description": "API para sistema TDA.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Cerrado Software",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.17.0",
+    "xml-js": "^1.6.11"
+  }
+}
