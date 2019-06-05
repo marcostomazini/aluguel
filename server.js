@@ -44,6 +44,6 @@ app.get('/core/integracao-porto-seguro/vinculos-empregaticios', async (req, res)
 
 
 
-app.listen(3451, () => {
+app.listen(process.env.PORT || 3451, () => {
   console.log('Example app listening on port 3451!')
 });
